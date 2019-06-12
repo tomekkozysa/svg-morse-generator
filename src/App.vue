@@ -1,8 +1,12 @@
 <template>
   <div id="app">
       <!-- <h1>− −− − −• − •• • •• − − •• − •• • − •• −−− − −• − •</h1> -->
-      <H1>SVG MORSE GENERATOR</H1>
-    <generator />
+      
+      <hgroup class="top-bar">
+      
+      <h1>SVG MORSE GENERATOR</h1>
+      </hgroup>
+    <generator/>
   </div>
 </template>
 
@@ -13,6 +17,14 @@ export default {
   name: 'app',
   components: {
     generator
+  },
+  data(){
+    return{
+      logo:"..."
+    }
+  },
+  methods:{
+    
   }
 }
 </script>
@@ -44,9 +56,19 @@ export default {
       font-size:16px;
       margin:0;
       text-align:right;
+      flex:1;
+  }
+  h2{
+      font-weight:100;
+      font-size:16px;
+      margin:0;
+      // text-align:right;
+      flex:1;
   }
 
-
+  .top-bar{
+    display:flex;
+ }
 
 }
 

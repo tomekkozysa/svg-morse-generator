@@ -2,7 +2,7 @@
     <div class="main">
         <section class="entry">
         <div class="text-entry">
-            <label class="text-entry-label">Enter the text, press enter to generate svg</label>
+            <label class="text-entry-label">Enter the text</label>
             <input class="text" v-model="text" @input="makeMorse(text)" autofocus/>
         </div>
         <div class="svg-output" ref="svgoutput">
@@ -168,7 +168,7 @@
 <script>
 
 export default {
-  name: 'HelloWorld',
+  name: 'generator',
   props: {
     msg: String
 },
@@ -272,6 +272,7 @@ mounted:function(){
     this.$refs.svg.appendChild(style);
     this.makeMorse(this.text);
 
+    
 },
 methods:{
     makeMorse:function(string){
@@ -334,7 +335,7 @@ methods:{
     },
 
     toSVG:function(str){
-
+         
         //console.log('toSVG ',str);
         let svgNS = "http://www.w3.org/2000/svg";
 
