@@ -3,7 +3,7 @@
         <section class="entry">
         <div class="text-entry">
             <label class="text-entry-label">Enter the text, press enter to generate svg</label>
-            <input class="text" v-model="text" @change="makeMorse(text)" autofocus/>
+            <input class="text" v-model="text" @input="makeMorse(text)" autofocus/>
         </div>
         <div class="svg-output" ref="svgoutput">
             <svg ref ="svg" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
@@ -18,6 +18,10 @@
             <h2 @click="settingsopen=!settingsopen"> Tweak <span v-if="settingsopen" >-</span> <span v-if="!settingsopen" >+</span>  </h2>
                 <div v-if="settingsopen" class="settings">
 
+                    <div class="settings-item">
+                        <label class="settings-label">letter space</label>
+                        <input class="settings-input" v-model="letterspace" type="number" /><br>
+                    </div>
                     <div class="settings-item">
                         <label class="settings-label">stroke width</label>
                         <input class="settings-input" v-model="strokew" type="number" /><br>
@@ -48,7 +52,7 @@
             <h2 @click="viewsvgcode=!viewsvgcode"> View Morse as text <span v-if="viewsvgcode" >-</span> <span v-if="!viewsvgcode" >+</span>  </h2>
                 <div v-if="viewsvgcode" class="viewastext">
 
-                    <div class="svgastext" v-html>{{morse}}</div>
+                    <div class="svgastext" v-html>{{cleanmorse}}</div>
                     <input class="hidden" ref="tempcode" type="text" v-model="morse">
 
                 </div>
@@ -167,7 +171,12 @@ export default {
   props: {
     msg: String
 },
-
+computed:{
+    cleanmorse:function(){
+        
+        return this.morse.split('|').join(' ');
+    }
+},
 data(){
     return {
 
@@ -176,76 +185,77 @@ data(){
         viewastext:false,
         viewsvgcode:false,
         settingsopen:true,
-        dashwidth : 12,
+        dashwidth : 8,
         svgastext:'no svg',
         dotwidth : 1,
         spacewidth : 10,
-        dotdashspace : 10,
+        dotdashspace : 5,
+        letterspace : 4,
         defaultx : 10,
         defaulty : 10,
         yspace : 20,
-        strokew : 3,
+        strokew : 2,
         style:'.line{stroke:black;stroke-linecap:round;}',
         text:'change the world with the code',
         svgLine:0,
         morse:'',
         svgmorse:'',
         table : {
-            'A':'•−',
-            'B':'−•••',
-            'C':'−•−•',
-            'D':'−••',
-            'E':'•',
-            'F':'••−•',
-            'G':'−−•',
-            'H':'••••',
-            'I':'••',
-            'J':'•−−−',
-            'K':'−•−',
-            'L':'•−••',
-            'M':'−−',
-            'N':'−•',
-            'O':'−−−',
-            'P':'•−−•',
-            'Q':'−−•−',
-            'R':'•−•',
-            'S':'•••',
-            'T':'−',
-            'U':'••−',
-            'V':'•••−',
-            'W':'•−−',
-            'X':'−••−',
-            'Y':'−•−−',
-            'Z':'−−••',
-            'Ä':'•−•−',
-            'Á':'•−−•−',
-            'Å':'•−−•−',
-            'Ch':'−−−−',
-            'É':'••−••',
-            'Ñ':'−−•−−',
-            'Ö':'−−−•',
-            'Ü':'••−−',
-            '0':'−−−−−',
-            '1':'•−−−−',
-            '2':'••−−−',
-            '3':'•••−−',
-            '4':'••••−',
-            '5':'•••••',
-            '6':'−••••',
-            '7':'−−•••',
-            '8':'−−−••',
-            '9':'−−−−•',
-            'apostrophe':'•−−−−•',
-            'fs':',•−•−•−',
-            'comma':'−−••−−',
-            'colon':'−−−•••',
-            'question':'••−−••',
-            'hyphen':'−••••−',
-            'fraction':'−••−•',
-            'parentheses':'−•−−•−',
-            'quote':'•−••−•',
-            'at':'•−−•−•',
-            'equals':'-•••−'
+            'A':'.-',
+            'B':'-...',
+            'C':'-.-.',
+            'D':'-..',
+            'E':'.',
+            'F':'..-.',
+            'G':'--.',
+            'H':'....',
+            'I':'..',
+            'J':'.---',
+            'K':'-.-',
+            'L':'.-..',
+            'M':'--',
+            'N':'-.',
+            'O':'---',
+            'P':'.--.',
+            'Q':'--.-',
+            'R':'.-.',
+            'S':'...',
+            'T':'-',
+            'U':'..-',
+            'V':'...-',
+            'W':'.--',
+            'X':'-..-',
+            'Y':'-.--',
+            'Z':'--..',
+            'Ä':'.-.-',
+            'Á':'.--.-',
+            'Å':'.--.-',
+            'Ch':'----',
+            'É':'..-..',
+            'Ñ':'--.--',
+            'Ö':'---.',
+            'Ü':'..--',
+            '0':'-----',
+            '1':'.----',
+            '2':'..---',
+            '3':'...--',
+            '4':'....-',
+            '5':'.....',
+            '6':'-....',
+            '7':'--...',
+            '8':'---..',
+            '9':'----.',
+            'apostrophe':'.----.',
+            'fs':',.-.-.-',
+            'comma':'--..--',
+            'colon':'---...',
+            'question':'..--..',
+            'hyphen':'-....-',
+            'fraction':'-..-.',
+            'parentheses':'-.--.-',
+            'quote':'.-..-.',
+            'at':'.--.-.',
+            'equals':'-...-'
 
         },
 
@@ -271,54 +281,53 @@ methods:{
         this.svgLine = 0;
 
         for(var i=0;i<string.length;i++){
+
             let letter = string[i].toUpperCase();
-
             switch (letter){
+                case " ":
+                        this.morse+= ' ';
+                break;
+                case "'":
+                        this.morse+= this.toMorse('apostrophe');
+                break;
+                case ".":
+                        this.morse+= this.toMorse('fs');
+                break;
+                case ",":
+                        this.morse+= this.toMorse('comma');
+                break;
+                case ";":
+                        this.morse+= this.toMorse('colon');
+                break;
+                case "?":
+                        this.morse+= this.toMorse('question');
+                break;
+                case "-":
+                        this.morse+= this.toMorse('hyphen');
+                break;
+                case "/":
+                        this.morse+= this.toMorse('parentheses');
+                break;
+                case "(" || ")":
+                        this.morse+= this.toMorse('fraction');
+                break;
+                case "\"":
+                        this.morse+= this.toMorse('quote');
+                break;
+                case "@":
+                        this.morse+= this.toMorse('at');
+                break;
+                case "=":
+                        this.morse+= this.toMorse('equals');
+                break;
 
-
-            case " ":
-                    this.morse+= ' ';
-            break;
-            case "'":
-                    this.morse+= this.toMorse('apostrophe');
-            break;
-            case ".":
-                    this.morse+= this.toMorse('fs');
-            break;
-            case ",":
-                    this.morse+= this.toMorse('comma');
-            break;
-            case ";":
-                    this.morse+= this.toMorse('colon');
-            break;
-            case "?":
-                    this.morse+= this.toMorse('question');
-            break;
-            case "-":
-                    this.morse+= this.toMorse('hyphen');
-            break;
-            case "/":
-                    this.morse+= this.toMorse('parentheses');
-            break;
-            case "(" || ")":
-                    this.morse+= this.toMorse('fraction');
-            break;
-            case "\"":
-                    this.morse+= this.toMorse('quote');
-            break;
-            case "@":
-                    this.morse+= this.toMorse('at');
-            break;
-            case "=":
-                    this.morse+= this.toMorse('equals');
-            break;
-
-            default:
-                    this.morse+= this.toMorse(letter);
-            break;
-            }
+                default:
+                        this.morse+= this.toMorse(letter);
+                break;
+                }
         }
-
+        
+        console.log(this.morse)
         this.toSVG(this.morse);
 
     },
@@ -348,7 +357,7 @@ methods:{
 
                 let letter = str[i];
 
-                if(letter == '−'){
+                if(letter == '-'){
                     // line = '<line x1="'+x+'" x2="'+(x+dashwidth)+'" y1="'+this.svgLine+'"/>';
                     node.setAttribute('x1',x)
                     node.setAttribute('x2',parseInt(x)+parseInt(this.dashwidth))
@@ -359,7 +368,7 @@ methods:{
                     group.appendChild(node);
 
                 }
-                if(letter == '•'){
+                if(letter == '.'){
                     // line = '<line x1="'+x+'" x2="'+(x+dotwidth)+'" y1="'+y+'"/>';
                     node.setAttribute('x1',x)
                     node.setAttribute('x2',parseInt(x)+parseInt(this.dotwidth))
@@ -370,6 +379,14 @@ methods:{
                     group.appendChild(node);
 
                 }
+                
+                if(letter == '|'){
+                    x = parseInt(x)+parseInt(this.letterspace);
+                    console.log("|");
+                    
+
+                }
+
                 if(letter == ' '){
                     x = this.defaultx;
                     y+= parseInt(this.spacewidth);
@@ -378,6 +395,9 @@ methods:{
                     this.$refs.svgmorse.appendChild(group);
 
                 }
+
+
+
             }
 
 
@@ -429,21 +449,16 @@ methods:{
 
       //convert svg source to URI data scheme.
       var url = "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(source);
-
       this.triggerDownload(url,this.text+'.svg');
-      //set url value to a element's href attribute.
-      //document.getElementById("link").href = url;
-      //you can download svg file by right click menu.
 
 
     },
     toMorse:function(letter){
-        return this.table[letter];
+        return this.table[letter]+'|';
     },
     copyCode:function(e) {
         var textToCopy = this.$refs.svgoutput; //document.querySelector(e);
         var textBox =  this.$refs.tempcode;
-        // textBox.setAttribute('value',textToCopy);
 
   textBox.select();
   document.execCommand('copy');
@@ -451,7 +466,11 @@ methods:{
 },
 
 watch: {
+    
     dashwidth: function (val) {
+      this.toSVG(this.morse);
+    },
+    text: function (val) {
       this.toSVG(this.morse);
     },
     dotwidth: function (val) {
@@ -465,6 +484,9 @@ watch: {
     },
     strokew: function (val) {
       this.toSVG(this.morse);
+    },
+    letterspace: function (val) {
+      this.toSVG(this.morse);
     }
   }
 }
@@ -473,17 +495,17 @@ watch: {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <!--
 Punctuation Mark	Morse
-Full-stop (period)	• − • − • −
-Comma	− − • • − −
-Colon	− − − • • •
-Question mark (query)	• • − − • •
-Apostrophe	• − − − − •
-Hyphen	− • • • • −
-Fraction bar	− • • − •
-Brackets (parentheses)	− • − − • −
-Quotation marks	• − • • − •
-At sign	• − − • − •
-Equals sign	− • • • −
-Error	• • • • • • • •
+Full-stop (period)	. - . - . -
+Comma	- - . . - -
+Colon	- - - . . .
+Question mark (query)	. . - - . .
+Apostrophe	. - - - - .
+Hyphen	- . . . . -
+Fraction bar	- . . - .
+Brackets (parentheses)	- . - - . -
+Quotation marks	. - . . - .
+At sign	. - - . - .
+Equals sign	- . . . -
+Error	. . . . . . . .
 
 -->
