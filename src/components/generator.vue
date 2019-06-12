@@ -47,13 +47,14 @@
             <div  class="copy-mod">
                 <h2 @click="exportAsSVG">Download</h2>
                 <h2 @click="copyCode">Copy SVG to clipboard</h2>
+                <input class="hidden" ref="tempcode" type="text" v-model="svgastext">
             </div>
             <div  class="viewsvgcode-mod">
             <h2 @click="viewsvgcode=!viewsvgcode"> View Morse as text <span v-if="viewsvgcode" >-</span> <span v-if="!viewsvgcode" >+</span>  </h2>
                 <div v-if="viewsvgcode" class="viewastext">
 
                     <div class="svgastext" v-html>{{cleanmorse}}</div>
-                    <input class="hidden" ref="tempcode" type="text" v-model="morse">
+                    <input class="hidden" type="text" v-model="morse">
 
                 </div>
             </div>
@@ -62,7 +63,7 @@
                 <div v-if="viewastext" class="viewastext">
 
                     <div class="svgastext" v-html>{{svgastext}}</div>
-                    <input class="hidden" ref="tempcode" type="text" v-model="svgastext">
+                    
 
                 </div>
             </div>
